@@ -45,7 +45,7 @@ npm start
 The server will start on [http://localhost:3000](http://localhost:3000). Keep that terminal open while using the app.
 
 ### 4. Open in Your Browser
-Open **[http://localhost:3000](http://localhost:3000)** in Chrome, Edge, or Firefox.
+Open http://localhost:3000/ in Chrome, Edge, or Firefox.
 This Express URL is recommended. If you open the page through VS Code Live Server on another local port (for example, `http://127.0.0.1:5500`), the frontend sends its API requests to the Sentinel AI backend on port 3000 rather than to Live Server.
 
 ---
