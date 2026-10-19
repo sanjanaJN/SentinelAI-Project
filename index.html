@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentinel AI — Digital Safety Intelligence</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#070b12;--panel:#0e1521;--line:#ffffff12;--text:#f4f7fb;--muted:#8f9bad;--cyan:#55d9ff;--purple:#9b7cff;--green:#59e6a7;--yellow:#ffd166;--red:#ff657a}
+body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+body:before{content:"";position:fixed;inset:-30%;background:radial-gradient(circle at 15% 15%,#7c5cff1d,transparent 28%),radial-gradient(circle at 90% 55%,#35d9ff12,transparent 30%),radial-gradient(circle at 45% 100%,#ff416d0b,transparent 25%);pointer-events:none}
+.nav{height:74px;border-bottom:1px solid var(--line);background:#070b12dd;backdrop-filter:blur(18px);display:flex;align-items:center;justify-content:space-between;padding:0 6%;position:relative;z-index:5}
+.logo{font-size:21px;font-weight:850;letter-spacing:-.5px}.logo b{color:var(--cyan)}
+.navright{display:flex;align-items:center;gap:14px;color:var(--muted);font-size:12px}.status{padding:8px 12px;border-radius:999px;background:#59e6a70e;border:1px solid #59e6a722;color:var(--green)}
+.hero{max-width:1120px;margin:auto;padding:64px 22px 28px;text-align:center;position:relative;z-index:1}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;border:1px solid #55d9ff25;background:#55d9ff08;border-radius:999px;padding:8px 13px;color:#aeb9ca;font-size:12px}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 15px var(--cyan)}
+h1{font-size:clamp(39px,6vw,70px);line-height:1;letter-spacing:-3px;margin:20px auto 16px;max-width:900px}
+.grad{background:linear-gradient(90deg,#fff,#9b7cff,#55d9ff);color:transparent;background-clip:text;-webkit-background-clip:text}
+.hero p{max-width:680px;margin:auto;color:var(--muted);line-height:1.7;font-size:16px}
+.shell{max-width:1120px;margin:35px auto 75px;padding:0 22px;display:grid;grid-template-columns:1.35fr .85fr;gap:18px;position:relative;z-index:1}
+.panel{background:linear-gradient(145deg,#111a27e8,#0b111bd9);border:1px solid var(--line);border-radius:24px;box-shadow:0 25px 80px #0008;overflow:hidden}
+.panelhead{padding:19px 21px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.panelhead strong{font-size:14px}.sub{font-size:11px;color:var(--muted);margin-top:3px}
+.live{font-size:10px;color:var(--green);border:1px solid #59e6a71e;padding:6px 9px;border-radius:999px}
+.analyzer{padding:21px}.label{font-size:12px;color:#adb7c7;margin-bottom:9px;display:block}
+textarea{width:100%;height:155px;resize:none;border:1px solid #ffffff13;background:#070b12;color:#eaf0f7;border-radius:16px;padding:15px;font:13px/1.6 inherit;outline:none}
+textarea:focus{border-color:#55d9ff55;box-shadow:0 0 0 3px #55d9ff09}
+.examples{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 16px}.examples button{cursor:pointer;background:#ffffff06;border:1px solid #ffffff12;color:#aab4c4;padding:8px 10px;border-radius:9px;font-size:10px}.examples button:hover{border-color:#55d9ff55;color:#fff}
+.analyze{width:100%;border:0;border-radius:13px;padding:13px;background:linear-gradient(90deg,#8064ff,#4cccf2);color:white;font-weight:750;cursor:pointer;box-shadow:0 8px 28px #5c62ff25}
+.result{margin-top:18px;border:1px solid var(--line);border-radius:17px;padding:16px;background:#070b1299;display:none}
+.result.show{display:block;animation:up .35s ease}@keyframes up{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.riskrow{display:flex;align-items:center;justify-content:space-between}.risk{font-size:19px;font-weight:800}.score{font-size:13px;font-weight:800}.bar{height:7px;background:#ffffff0c;border-radius:99px;margin:12px 0 15px;overflow:hidden}.fill{position:relative;overflow:hidden;height:100%;width:0;border-radius:99px;transition:width .7s}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mini{border:1px solid #ffffff0c;background:#ffffff05;border-radius:11px;padding:11px}.mini b{font-size:11px}.mini span{display:block;color:#8994a6;font-size:10px;margin-top:4px;line-height:1.4}
+.action{margin-top:12px;padding:12px;border-radius:11px;background:#ffffff06;border:1px solid #ffffff0d;color:#bdc6d4;font-size:11px;line-height:1.5}
+.dashboard{padding:20px}.dashgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{padding:15px;border-radius:15px;border:1px solid #ffffff0d;background:#ffffff05}.metric .num{font-size:25px;font-weight:800}.metric small{color:#7e899b;font-size:10px}.meter{margin-top:12px}.meterline{height:5px;background:#ffffff0c;border-radius:99px;overflow:hidden}.meterline i{display:block;height:100%;border-radius:99px}.threats{margin-top:17px}.threats h3{font-size:12px;margin-bottom:10px}.threat{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #ffffff08;font-size:11px}.threat span{color:var(--muted)}.pill{padding:4px 7px;border-radius:7px;font-size:9px}.high{color:#ff9aaa;background:#ff657a10}.med{color:#ffe09a;background:#ffd16610}.low{color:#8df1c3;background:#59e6a710}
+.bottom{max-width:1120px;margin:0 auto 70px;padding:0 22px;display:grid;grid-template-columns:repeat(4,1fr);gap:11px;position:relative;z-index:1}.feature{padding:18px;border:1px solid var(--line);background:#ffffff05;border-radius:17px}.feature .ico{font-size:20px}.feature b{display:block;font-size:12px;margin:9px 0 5px}.feature span{font-size:10px;color:#818c9f;line-height:1.5}
+.footer{text-align:center;color:#687386;font-size:10px;padding:0 20px 35px;position:relative;z-index:1}
+@media(max-width:820px){.shell{grid-template-columns:1fr}.bottom{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){h1{letter-spacing:-2px}.bottom{grid-template-columns:1fr}.navright>span{display:none}.grid{grid-template-columns:1fr}}
+
+/* PREMIUM MOTION */
+html{scroll-behavior:smooth}
+body{overflow-x:hidden}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20;background:linear-gradient(115deg,transparent 0%,#ffffff03 48%,transparent 52%);transform:translateX(-120%);animation:scan 11s ease-in-out infinite}
+@keyframes scan{0%,65%{transform:translateX(-120%)}82%,100%{transform:translateX(120%)}}
+.nav{animation:navIn .7s ease both}
+@keyframes navIn{from{opacity:0;transform:translateY(-15px)}to{opacity:1;transform:none}}
+.hero .eyebrow{animation:fadeUp .7s .1s both}.hero h1{animation:fadeUp .8s .2s both}.hero p{animation:fadeUp .8s .35s both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.panel{position:relative;transition:transform .45s cubic-bezier(.2,.8,.2,1),border-color .35s,box-shadow .45s}
+.panel:hover{transform:translateY(-5px);border-color:#ffffff20;box-shadow:0 30px 90px #0009,0 0 45px #55d9ff08}
+.live{animation:livePulse 2s infinite}
+@keyframes livePulse{50%{box-shadow:0 0 0 5px #59e6a710}}
+textarea{transition:all .3s}textarea:hover{border-color:#ffffff22}
+.examples button,.feature,.metric,.mini,.threat{transition:transform .25s ease,border-color .25s,background .25s}
+.examples button:hover{transform:translateY(-2px) scale(1.02);background:#ffffff0c}
+.feature:hover,.metric:hover{transform:translateY(-4px);border-color:#55d9ff25;background:#ffffff09}
+.feature .ico{transition:transform .3s}.feature:hover .ico{transform:scale(1.18) rotate(-4deg)}
+.analyze{position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s}
+.analyze:before{content:"";position:absolute;top:0;left:-80%;width:55%;height:100%;background:linear-gradient(90deg,transparent,#ffffff2e,transparent);transform:skewX(-20deg);transition:left .7s}
+.analyze:hover{transform:translateY(-2px);box-shadow:0 12px 35px #5c62ff35}.analyze:hover:before{left:125%}.analyze:active{transform:scale(.985)}
+.result{position:relative;overflow:hidden}.result:after{content:"";position:absolute;width:130px;height:130px;right:-60px;top:-60px;border-radius:50%;background:#55d9ff0d;filter:blur(4px);animation:orb 5s ease-in-out infinite}
+@keyframes orb{50%{transform:translate(-25px,25px);opacity:.45}}
+.fill:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,#ffffff66,transparent);animation:barShine 1.4s ease}
+@keyframes barShine{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.threat{border-radius:9px;padding-left:7px;padding-right:7px}.threat:hover{transform:translateX(4px);background:#ffffff05}
+.status{animation:statusGlow 2.6s ease-in-out infinite}@keyframes statusGlow{50%{box-shadow:0 0 18px #59e6a711}}
+.pulse{animation:pulse 1.8s infinite}@keyframes pulse{50%{box-shadow:0 0 0 7px #55d9ff00}}
+.particle{position:fixed;width:2px;height:2px;background:#ffffff40;border-radius:50%;pointer-events:none;z-index:0;animation:float linear infinite}
+@keyframes float{from{transform:translateY(110vh);opacity:0}15%{opacity:.8}85%{opacity:.8}to{transform:translateY(-10vh);opacity:0}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+
+/* ===== ADVANCED SAFETY FEATURES ===== */
+.result{transition:all .35s ease}
+.signal-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.signal{font-size:10px;padding:7px 9px;border-radius:8px;background:#ff657a0c;border:1px solid #ff657a22;color:#ffadb9}
+.safetyScore{margin-top:14px;padding:13px;border:1px solid #ffffff0c;background:#ffffff04;border-radius:13px}
+.scoreline{display:flex;justify-content:space-between;font-size:10px;color:#8d98a9;margin-bottom:7px}.scoreline b{color:#fff}
+.scorebar{height:6px;background:#ffffff0b;border-radius:99px;overflow:hidden}.scorebar i{display:block;height:100%;width:28%;background:linear-gradient(90deg,#ff657a,#ffd166);border-radius:99px;transition:width .7s}
+.timeline{margin-top:16px}.timeline h3{font-size:11px;margin-bottom:9px}.event{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid #ffffff07;font-size:10px;color:#8d98a9}.event b{color:#dbe1ea}.event .time{min-width:40px;color:#687386}
+.history{margin-top:16px}.history h3{font-size:11px;margin-bottom:9px}.historyrow{display:flex;justify-content:space-between;padding:9px 10px;background:#ffffff04;border:1px solid #ffffff08;border-radius:9px;margin-bottom:6px;font-size:10px}.historyrow span:last-child{font-weight:700}
+.reportbtn{width:100%;margin-top:12px;border:1px solid #55d9ff25;background:#55d9ff08;color:#a9eaff;border-radius:10px;padding:10px;font-size:10px;cursor:pointer;transition:.25s}.reportbtn:hover{background:#55d9ff13;transform:translateY(-2px)}
+.reportbox{margin-top:14px;padding:18px;border-radius:14px;background:linear-gradient(145deg,#0a0e16,#080c13);border:1px solid #ffffff14;font-size:11px;line-height:1.6;color:#aebacb;display:none;box-shadow:0 12px 35px #0008}
+.reportbox.show{display:block;animation:fadeUp .3s ease}
+.report-head{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:1px solid #ffffff0d;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+.report-title{font-size:13px;font-weight:800;color:#fff;letter-spacing:-.3px}
+.report-meta{font-size:10px;color:var(--muted);margin-top:2px}
+.report-actions{display:flex;gap:7px}
+.report-act-btn{background:#ffffff06;border:1px solid #ffffff14;color:#d5dfec;padding:6px 11px;border-radius:8px;font-size:10px;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:5px}
+.report-act-btn:hover{background:#55d9ff12;border-color:#55d9ff40;color:#fff}
+.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
+.report-metric{background:#ffffff04;border:1px solid #ffffff0a;border-radius:9px;padding:9px 12px}
+.report-metric span{display:block;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.report-metric b{display:block;font-size:13px;color:#fff;margin-top:2px}
+.report-section{margin-bottom:13px;padding-bottom:12px;border-bottom:1px solid #ffffff08}
+.report-section h4{font-size:10px;letter-spacing:.6px;color:#7e8d9f;text-transform:uppercase;margin-bottom:6px}
+.report-signals{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.report-signal-chip{padding:4px 8px;border-radius:6px;font-size:9px;background:#ffffff06;border:1px solid #ffffff0e;color:#cdd7e4}
+@media print{
+  body *{visibility:hidden!important}
+  #reportbox,#reportbox *{visibility:visible!important}
+  #reportbox{position:fixed;inset:0;padding:25px!important;background:#fff!important;color:#111!important;border:none!important;box-shadow:none!important;display:block!important;font-size:12px!important;line-height:1.6!important}
+  #reportbox .report-actions{display:none!important}
+  #reportbox b,#reportbox strong,#reportbox .report-title,#reportbox .report-metric b{color:#000!important}
+  #reportbox .report-meta,#reportbox .report-metric span,#reportbox .report-section h4{color:#555!important}
+  #reportbox .report-metric,#reportbox .report-section{border-color:#ddd!important;background:#f9f9f9!important}
+  #reportbox .report-signal-chip{background:#f0f0f0!important;border-color:#ccc!important;color:#222!important}
+}
+.critical{animation:criticalPulse 1.4s ease-in-out infinite}@keyframes criticalPulse{50%{box-shadow:0 0 30px #ff657a16}}
+.badgeType{display:inline-block;margin-top:7px;padding:5px 8px;border-radius:7px;background:#ffffff08;border:1px solid #ffffff0c;color:#d8deea;font-size:9px}
+
+.followup{margin-top:14px;padding:14px;border:1px solid #55d9ff18;background:linear-gradient(135deg,#55d9ff06,#9b7cff06);border-radius:14px}
+.followtitle{font-size:11px;font-weight:800;color:#dce5ef;margin-bottom:10px}
+.questionchips-removed{display:flex;flex-wrap:wrap;gap:7px}
+.questionchips-removed button{border:1px solid #ffffff12;background:#ffffff06;color:#aeb9c8;border-radius:999px;padding:8px 10px;font-size:10px;cursor:pointer;transition:.22s}
+.questionchips-removed button:hover{transform:translateY(-2px);border-color:#55d9ff40;color:#fff;background:#55d9ff0b}
+.chatmini{margin-top:11px}.chatmini-input{display:flex;gap:7px}
+.chatmini-input input{min-width:0;flex:1;border:1px solid #ffffff12;background:#070b12;color:#fff;border-radius:9px;padding:10px;font:11px inherit;outline:none}
+.chatmini-input input:focus{border-color:#55d9ff45}
+.chatmini-input button{border:1px solid #55d9ff30;background:#55d9ff0d;color:#a9eaff;border-radius:9px;padding:0 13px;font-size:10px;cursor:pointer}
+.chatreply{margin-top:9px;padding:11px;border-radius:10px;background:#070b12aa;border:1px solid #ffffff0b;color:#aeb8c8;font-size:10px;line-height:1.6;min-height:38px}
+
+/* ===== OBSIDIAN CLASS AI CHAT ===== */
+.followup{margin-top:16px;padding:0;border:1px solid #ffffff10;background:linear-gradient(145deg,#0a0d13,#0d1119);border-radius:18px;overflow:hidden;box-shadow:inset 0 1px #ffffff06,0 18px 50px #0007}
+.aihead{display:flex;align-items:center;gap:11px;padding:15px 16px;border-bottom:1px solid #ffffff0a;background:#0b0f16}
+.ai-avatar{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,#8b6cff,#42cbe9);color:#080a0f;font-weight:900;font-size:13px;box-shadow:0 0 22px #7562ff20}
+.followtitle{font-size:12px;font-weight:800;color:#eef2f7}.aisub{font-size:9px;color:#717d8d;margin-top:3px}
+.ai-online{margin-left:auto;font-size:8px;letter-spacing:.7px;color:#61e5a8;border:1px solid #61e5a817;padding:5px 7px;border-radius:999px}
+.chatwindow{height:170px;overflow:auto;padding:14px;background:radial-gradient(circle at 80% 20%,#8b6cff06,transparent 35%),#080b11}
+.chatmsg{display:flex;margin-bottom:9px}.chatmsg.user{justify-content:flex-end}
+.bubble{max-width:88%;padding:10px 12px;border-radius:12px;border:1px solid #ffffff0b;background:#111720;color:#b9c3d0;font-size:10px;line-height:1.6}
+.chatmsg.user .bubble{background:linear-gradient(135deg,#5d49ae,#3d7892);border-color:#ffffff12;color:#fff}
+.chatmini{display:flex;gap:8px;padding:11px;border-top:1px solid #ffffff0a;background:#0a0e14}
+.chatmini input{min-width:0;flex:1;border:1px solid #ffffff10;background:#07090d;color:#f4f7fb;border-radius:11px;padding:11px 12px;font:11px inherit;outline:none;transition:.25s}
+.chatmini input:focus{border-color:#8b6cff55;box-shadow:0 0 0 3px #8b6cff0a}
+.chatmini button{border:1px solid #8b6cff35;background:linear-gradient(135deg,#7560df,#3baecb);color:white;border-radius:11px;padding:0 15px;font-size:10px;font-weight:700;cursor:pointer;transition:.25s}
+.chatmini button:hover{transform:translateY(-1px);box-shadow:0 7px 20px #5d5de52b}
+.chatwindow::-webkit-scrollbar{width:4px}.chatwindow::-webkit-scrollbar-thumb{background:#ffffff18;border-radius:99px}
+
+.safetyTips{max-width:1120px;margin:0 auto 32px;padding:0 22px;position:relative;z-index:1}
+.tipsHead{margin-bottom:13px}.tipsEyebrow{font-size:9px;letter-spacing:1.8px;color:#6fdbf2;margin-bottom:7px}
+.tipsHead h2{font-size:20px;letter-spacing:-.5px}.tipsHead p{font-size:11px;color:#758192;margin-top:5px}
+.tipsGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tipCard{border:1px solid #ffffff0d;border-radius:18px;padding:18px;background:linear-gradient(145deg,#0d121a,#0a0e14);transition:.3s;position:relative;overflow:hidden}
+.tipCard:after{content:"";position:absolute;width:110px;height:110px;border-radius:50%;right:-60px;top:-60px;filter:blur(12px);opacity:.16}
+.doCard:after{background:#59e6a7}.dontCard:after{background:#ff657a}
+.tipCard:hover{transform:translateY(-4px);border-color:#ffffff1b;box-shadow:0 18px 45px #0007}
+.tipIcon{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-weight:900;font-size:16px}
+.doCard .tipIcon{background:#59e6a710;color:#59e6a7;border:1px solid #59e6a720}.dontCard .tipIcon{background:#ff657a10;color:#ff8292;border:1px solid #ff657a20}
+.tipCard h3{font-size:12px;margin:9px 0;color:#e8edf4}.tipCard ul{padding-left:17px;color:#929dac;font-size:10px;line-height:1.7}.tipCard li{margin:4px 0}
+@media(max-width:650px){.tipsGrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body><i class="particle" style="left:0%;animation-duration:9s;animation-delay:-0s"></i><i class="particle" style="left:17%;animation-duration:10s;animation-delay:-4s"></i><i class="particle" style="left:34%;animation-duration:11s;animation-delay:-8s"></i><i class="particle" style="left:51%;animation-duration:12s;animation-delay:-12s"></i><i class="particle" style="left:68%;animation-duration:13s;animation-delay:-3s"></i><i class="particle" style="left:85%;animation-duration:14s;animation-delay:-7s"></i><i class="particle" style="left:2%;animation-duration:15s;animation-delay:-11s"></i><i class="particle" style="left:19%;animation-duration:9s;animation-delay:-2s"></i><i class="particle" style="left:36%;animation-duration:10s;animation-delay:-6s"></i><i class="particle" style="left:53%;animation-duration:11s;animation-delay:-10s"></i><i class="particle" style="left:70%;animation-duration:12s;animation-delay:-1s"></i><i class="particle" style="left:87%;animation-duration:13s;animation-delay:-5s"></i><i class="particle" style="left:4%;animation-duration:14s;animation-delay:-9s"></i><i class="particle" style="left:21%;animation-duration:15s;animation-delay:-0s"></i><i class="particle" style="left:38%;animation-duration:9s;animation-delay:-4s"></i><i class="particle" style="left:55%;animation-duration:10s;animation-delay:-8s"></i><i class="particle" style="left:72%;animation-duration:11s;animation-delay:-12s"></i><i class="particle" style="left:89%;animation-duration:12s;animation-delay:-3s"></i>
+<nav class="nav">
+  <div class="logo">SENTINEL<b>AI</b></div>
+  <div class="navright"><span>Digital Safety Intelligence • Gen Z & Gen Alpha</span><div class="status">● SYSTEM ACTIVE</div></div>
+</nav>
+
+<section class="hero">
+  <div class="eyebrow"><i class="pulse"></i> AI-powered harmful interaction detection</div>
+  <h1>Make online spaces <span class="grad">safer with AI.</span></h1>
+  <p>Analyze online interactions, identify harmful patterns, explain the risk, and provide safer next steps — designed for the digital lives of Gen Z and Gen Alpha.</p>
+</section>
+
+<section class="shell">
+  <main class="panel">
+    <div class="panelhead">
+      <div><strong>AI Interaction Analyzer</strong><div class="sub">Paste an online message or conversation sample</div></div>
+      <div class="live">● REAL-TIME</div>
+    </div>
+    <div class="analyzer">
+      <label class="label">INTERACTION TO ANALYZE</label>
+      <textarea id="text" placeholder="Example: Someone online keeps asking for private photos and tells me not to tell anyone..."></textarea>
+      <div class="examples">
+        <button onclick="example('Hey! Want to join our study group tomorrow? I can help you with the assignment.')">✓ Safe</button>
+        <button onclick="example('Everyone in the group is making fun of you. You are so useless.')">⚠ Bullying</button>
+        <button onclick="example('Send me a private photo. Do not tell your parents or anyone else about our conversation.')">🚨 Grooming</button>
+        <button onclick="example('Click this link now and enter your password to claim your free prize!')">🎣 Scam</button>
+      </div>
+      <button class="analyze" type="button">Analyze Interaction with AI →</button>
+      <div class="privacy-note" style="margin-top:10px;font-size:10px;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px;text-align:center;line-height:1.4">
+        <span>🔒 Client-side heuristic analysis • Messages remain local on your device • Heuristic AI may make mistakes</span>
+      </div>
+      <div class="result" id="result">
+        <div class="riskrow"><div class="risk" id="risk">—</div><div class="score" id="score">—</div></div>
+        <div class="bar"><div class="fill" id="fill"></div></div>
+        <div class="grid">
+          <div class="mini"><b>Detected Pattern</b><span id="pattern">—</span></div>
+          <div class="mini"><b>AI Confidence</b><span id="confidence">—</span></div>
+        </div>
+        <div class="action"><b style="color:#fff">Recommended action:</b><br><span id="action">—</span></div>
+        <div class="signal-list" id="signals"></div>
+        <div class="safetyScore"><div class="scoreline"><span>CONVERSATION SAFETY SCORE</span><b id="safetyText">72/100</b></div><div class="scorebar"><i id="safetyFill"></i></div></div>
+        <div class="timeline"><h3>DETECTION TIMELINE</h3><div id="timeline"></div></div>
+        <button class="reportbtn" id="reportBtn" type="button">▣ Generate Safety Report</button>
+        <div class="reportbox" id="reportbox"></div>
+        
+<div class="followup" id="followup">
+  <div class="aihead">
+    <div class="ai-avatar">S</div>
+    <div>
+      <div class="followtitle">Sentinel AI Assistant</div>
+      <div class="aisub">Ask anything about this interaction</div>
+    </div>
+    <span class="ai-online" id="aiStatusBadge">● CHECKING STATUS...</span>
+  </div>
+  <div class="chatwindow" id="chatwindow" aria-live="polite">
+    <div class="chatmsg ai">
+      <div class="bubble">I've analyzed the interaction. You can ask me anything about the risk, classification, confidence, detected signals, safety steps, or what you should do next.</div>
+    </div>
+  </div>
+  <form class="chatmini" id="followForm">
+    <input id="followInput" autocomplete="off" placeholder="Ask Sentinel AI anything..." aria-label="Ask Sentinel AI anything">
+    <button type="submit">Send&nbsp; ↗</button>
+  </form>
+</div>
+
+
+      </div>
+    </div>
+  </main>
+
+  <aside class="panel">
+    <div class="panelhead">
+      <div><strong>Safety Dashboard</strong><div class="sub" id="dashSub">Live Session Metrics • Private on-device</div></div>
+      <button id="resetStatsBtn" type="button" title="Reset session metrics and history" style="background:transparent;border:1px solid #ffffff14;color:var(--muted);padding:4px 8px;border-radius:6px;font-size:9px;cursor:pointer">Reset</button>
+    </div>
+    <div class="dashboard">
+      <div class="dashgrid">
+        <div class="metric"><div class="num" id="statAnalyzed">0</div><small>Interactions analyzed</small></div>
+        <div class="metric"><div class="num" id="statConfidence">0.0%</div><small>Avg. model confidence</small></div>
+        <div class="metric"><div class="num" id="statRisks">0</div><small>Potential risks found</small></div>
+        <div class="metric">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div class="num" id="statResolved">100%</div>
+            <button id="resolveRiskBtn" type="button" title="Mark last detected risk as reviewed/resolved" style="background:#59e6a715;border:1px solid #59e6a735;color:var(--green);font-size:9px;padding:3px 6px;border-radius:5px;cursor:pointer">✓ Resolve</button>
+          </div>
+          <small>Resolved / mitigated</small>
+        </div>
+      </div>
+      <div class="threats">
+        <h3>DETECTION CATEGORIES</h3>
+        <div class="threat"><span>Cyberbullying</span><span><span id="catCount-bullying" style="margin-right:6px;color:var(--muted);font-size:10px">0</span><em class="pill high">HIGH</em></span></div>
+        <div class="threat"><span>Physical Threat / Violence</span><span><span id="catCount-threat" style="margin-right:6px;color:var(--muted);font-size:10px">0</span><em class="pill high">CRITICAL</em></span></div>
+        <div class="threat"><span>Manipulation / Grooming</span><span><span id="catCount-grooming" style="margin-right:6px;color:var(--muted);font-size:10px">0</span><em class="pill high">HIGH</em></span></div>
+        <div class="threat"><span>Scams & Phishing</span><span><span id="catCount-scam" style="margin-right:6px;color:var(--muted);font-size:10px">0</span><em class="pill med">MEDIUM</em></span></div>
+        <div class="threat"><span>Normal / Safe Interaction</span><span><span id="catCount-safe" style="margin-right:6px;color:var(--muted);font-size:10px">0</span><em class="pill low">SAFE</em></span></div>
+      </div>
+      <div class="history">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px">
+          <h3>RECENT ANALYSIS HISTORY</h3>
+          <button id="clearHistoryBtn" type="button" style="background:none;border:none;color:var(--muted);font-size:9px;cursor:pointer;text-decoration:underline">Clear</button>
+        </div>
+        <div id="historyList">
+          <div style="text-align:center;padding:12px;color:var(--muted);font-size:10px;border:1px dashed #ffffff0d;border-radius:9px">No interactions analyzed yet in this session.</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</section>
+
+
+<section class="safetyTips">
+  <div class="tipsHead">
+    <div>
+      <div class="tipsEyebrow">DIGITAL SAFETY GUIDE</div>
+      <h2>What to do — and what not to do</h2>
+      <p>Sentinel AI turns its assessment into practical safety guidance you can act on.</p>
+    </div>
+  </div>
+  <div class="tipsGrid">
+    <div class="tipCard doCard">
+      <div class="tipIcon">✓</div>
+      <h3>DO</h3>
+      <ul>
+        <li>Save evidence such as screenshots when appropriate.</li>
+        <li>Block or report harmful accounts.</li>
+        <li>Tell a trusted adult or trusted person.</li>
+        <li>Use strong, unique passwords and privacy settings.</li>
+        <li>Ask for help when an interaction feels unsafe.</li>
+      </ul>
+    </div>
+    <div class="tipCard dontCard">
+      <div class="tipIcon">×</div>
+      <h3>DON'T</h3>
+      <ul>
+        <li>Don't share passwords, OTPs, private photos, or sensitive details.</li>
+        <li>Don't meet an unknown online contact secretly.</li>
+        <li>Don't click suspicious links or claim unexpected prizes.</li>
+        <li>Don't continue an escalating argument with a threatening person.</li>
+        <li>Don't feel pressured to keep an unsafe interaction secret.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="bottom">
+  <div class="feature">🧠<b>Explainable AI</b><span>Shows the patterns and signals behind each safety assessment.</span></div>
+  <div class="feature">🚨<b>Early Detection</b><span>Flags potentially harmful interactions before they escalate.</span></div>
+  <div class="feature">🔒<b>Privacy First</b><span>Designed around responsible analysis and minimal data exposure.</span></div>
+  <div class="feature">💡<b>Safety Guidance</b><span>Provides practical next steps instead of only showing a risk score.</span></div>
+</section>
+
+<div class="footer">Sentinel AI • Client-side heuristic safety intelligence • Messages evaluated locally on-device • Heuristic assessments may make mistakes.</div>
+
+<script>
+(function(){
+  'use strict';
+
+  function init(){
+    const $ = id => document.getElementById(id);
+    const text=$('text'), result=$('result'), risk=$('risk'), score=$('score');
+    const fill=$('fill'), pattern=$('pattern'), confidence=$('confidence'), action=$('action');
+    const signals=$('signals'), safetyText=$('safetyText'), safetyFill=$('safetyFill');
+    const timeline=$('timeline'), reportbox=$('reportbox'), reportBtn=$('reportBtn');
+    const followForm=$('followForm'), followInput=$('followInput'), chatwindow=$('chatwindow');
+    const followSendBtn=followForm?.querySelector('button[type="submit"]');
+    const statAnalyzed=$('statAnalyzed'), statConfidence=$('statConfidence');
+    const statRisks=$('statRisks'), statResolved=$('statResolved');
+    const historyList=$('historyList'), clearHistoryBtn=$('clearHistoryBtn');
+    const resetStatsBtn=$('resetStatsBtn'), resolveRiskBtn=$('resolveRiskBtn');
+    const aiStatusBadge=$('aiStatusBadge');
+    let conversationHistory = [];
+
+    if(!text || !result || !followForm || !followInput || !chatwindow){
+      return;
+    }
+
+    const backendOrigin = (() => {
+      const { protocol, hostname, port } = window.location;
+      if (port === '3000' || window.location.origin.includes(':3000')) {
+        return '';
+      }
+      if (protocol === 'file:') {
+        return 'http://localhost:3000';
+      }
+      const localHosts = ['localhost', '127.0.0.1', '[::1]'];
+      if (localHosts.includes(hostname)) {
+        return 'http://' + hostname + ':3000';
+      }
+      return 'http://localhost:3000';
+    })();
+    const backendUrl = endpoint => backendOrigin + endpoint;
+
+    function addChatMessage(message, who){
+      const row=document.createElement('div');
+      row.className='chatmsg '+(who==='user'?'user':'ai');
+      const bubble=document.createElement('div');
+      bubble.className='bubble';
+      bubble.innerHTML=message;
+      row.appendChild(bubble);
+      chatwindow.appendChild(row);
+      chatwindow.scrollTop=chatwindow.scrollHeight;
+    }
+
+    let currentAnalysis = null;
+
+    function getAnalysis(){
+      if(currentAnalysis){
+        return {
+          risk: currentAnalysis.r,
+          pattern: currentAnalysis.p,
+          confidence: currentAnalysis.c,
+          action: currentAnalysis.a,
+          score: currentAnalysis.s,
+          data: currentAnalysis
+        };
+      }
+      return {
+        risk: risk?.textContent && risk.textContent !== '—' ? risk.textContent : 'NOT ANALYZED',
+        pattern: pattern?.textContent && pattern.textContent !== '—' ? pattern.textContent : 'No classification',
+        confidence: confidence?.textContent && confidence.textContent !== '—' ? confidence.textContent : 'Not available',
+        action: action?.textContent && action.textContent !== '—' ? action.textContent : 'Please analyze an interaction first.',
+        score: score?.textContent ? (score.textContent.match(/\d+/)?.[0] || '0') : '0',
+        data: null
+      };
+    }
+
+    function escapeHtml(str){
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function formatAIMarkdown(text){
+      if(!text) return '';
+      let s = String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/(?:^|\n)###\s+(.*?)(?=\n|$)/gim, '<br><b style="color:#55d9ff;font-size:12px;display:inline-block;margin-top:6px">$1</b>')
+        .replace(/(?:^|\n)##\s+(.*?)(?=\n|$)/gim, '<br><b style="color:#55d9ff;font-size:13px;display:inline-block;margin-top:8px">$1</b>')
+        .replace(/(?:^|\n)(?:>|&gt;)\s*\*(.*?)\*/gim, '<div style="border-left:2px solid #55d9ff;margin:7px 0;padding:5px 9px;background:#55d9ff0a;color:#d5dfec;border-radius:4px"><i>$1</i></div>')
+        .replace(/(?:^|\n)(?:>|&gt;)\s*(.*?)(?=\n|$)/gim, '<div style="border-left:2px solid #55d9ff;margin:7px 0;padding:5px 9px;background:#55d9ff0a;color:#d5dfec;border-radius:4px">$1</div>')
+        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+        .replace(/\*(.*?)\*/g, '<i>$1</i>')
+        .replace(/`([^`]+)`/g, '<code style="background:#ffffff10;padding:2px 4px;border-radius:4px;color:#a9eaff">$1</code>')
+        .replace(/\n\n/g, '<br><br>')
+        .replace(/\n•\s*/g, '<br>• ')
+        .replace(/\n-\s*/g, '<br>• ')
+        .replace(/(?:^|\n)(\d+)\.\s+/g, '<br><b>$1.</b> ')
+        .replace(/\n/g, '<br>');
+
+      return s.replace(/^(?:<br>)+/, '');
+    }
+
+    let openAIConfigured = false;
+
+    async function checkAIStatus(){
+      try {
+        const res = await fetch(backendUrl('/api/status'));
+        if(res.ok){
+          const data = await res.json();
+          if(data.service !== 'Sentinel AI Backend'){
+            throw new Error('Unexpected response from backend status endpoint.');
+          }
+          openAIConfigured = !!data.configured;
+          if(aiStatusBadge){
+            if(data.demoMode || data.quotaExhausted){
+              aiStatusBadge.textContent = '● DEMO MODE (ZERO CREDITS)';
+              aiStatusBadge.style.color = '#ffd166';
+              aiStatusBadge.style.borderColor = '#ffd16635';
+              aiStatusBadge.title = 'Demo Mode is active. Providing pre-configured safety counselor advice because OpenAI API balance is zero.';
+            } else if(openAIConfigured){
+              aiStatusBadge.textContent = '● OPENAI ACTIVE (' + (data.model || 'gpt-4o-mini') + ')';
+              aiStatusBadge.style.color = '#59e6a7';
+              aiStatusBadge.style.borderColor = '#59e6a735';
+              aiStatusBadge.title = 'Connected to the Sentinel AI backend with live OpenAI API.';
+            } else {
+              aiStatusBadge.textContent = '○ OPENAI KEY NEEDED';
+              aiStatusBadge.style.color = '#ffd166';
+              aiStatusBadge.style.borderColor = '#ffd16635';
+              aiStatusBadge.title = 'The backend is reachable, but OPENAI_API_KEY is not configured in .env.';
+            }
+          }
+        } else {
+          setOfflineBadge();
+        }
+      } catch (e) {
+        setOfflineBadge();
+      }
+    }
+
+    function setOfflineBadge(){
+      if(aiStatusBadge){
+        aiStatusBadge.textContent = '○ BACKEND UNREACHABLE';
+        aiStatusBadge.style.color = '#8f9bad';
+        aiStatusBadge.style.borderColor = '#ffffff15';
+        aiStatusBadge.title = 'Open this app at http://localhost:3000. If it is unavailable, run npm start.';
+      }
+    }
+
+    async function askQuestion(){
+      const q = followInput.value.trim();
+      if(!q || followInput.disabled) return;
+
+      addChatMessage(escapeHtml(q), 'user');
+      conversationHistory.push({ role: 'user', content: q });
+      followInput.value = '';
+      followInput.disabled = true;
+      if(followSendBtn) followSendBtn.disabled = true;
+
+      // Show animated thinking bubble
+      const typingRow = document.createElement('div');
+      typingRow.className = 'chatmsg ai';
+      typingRow.innerHTML = '<div class="bubble" style="display:flex;align-items:center;gap:7px"><span class="pulse" style="width:5px;height:5px"></span> Sentinel AI is thinking...</div>';
+      chatwindow.appendChild(typingRow);
+      chatwindow.scrollTop = chatwindow.scrollHeight;
+
+      const contextData = currentAnalysis ? {
+        pattern: currentAnalysis.p,
+        risk: currentAnalysis.r,
+        score: currentAnalysis.s,
+        signals: currentAnalysis.signals,
+        action: currentAnalysis.a,
+        inputText: currentAnalysis.inputText,
+        category: currentAnalysis.category,
+        confidence: currentAnalysis.c
+      } : null;
+
+      try {
+        const response = await fetch(backendUrl('/api/chat'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: conversationHistory,
+            context: contextData
+          })
+        });
+
+        if(typingRow.parentNode) typingRow.remove();
+
+        if(response.ok){
+          const resultData = await response.json();
+          if(typeof resultData.reply !== 'string' || !resultData.reply.trim()){
+            addChatMessage('<b>⚠️ Unexpected Chat Service Response</b><br>The backend did not return a usable assistant reply. Please try again.', 'ai');
+            return;
+          }
+          const replyText = resultData.reply;
+          if(resultData.mode === 'demo' || resultData.demo === true){
+            conversationHistory.push({
+              role: 'assistant',
+              content: '[DEMO MODE — PRE-CONFIGURED DIGITAL SAFETY COUNSELOR] ' + replyText
+            });
+            if(aiStatusBadge){
+              aiStatusBadge.textContent = '● DEMO MODE (ZERO CREDITS)';
+              aiStatusBadge.style.color = '#ffd166';
+              aiStatusBadge.style.borderColor = '#ffd16635';
+              aiStatusBadge.title = 'Demo Mode is active. Providing pre-configured safety counselor advice because OpenAI API balance is zero.';
+            }
+            addChatMessage(
+              '<div style="margin-bottom:8px;padding:6px 10px;background:#ffd16612;border:1px solid #ffd16635;border-radius:8px">' +
+                '<b style="color:#ffd166;font-size:11px">● DEMO MODE — PRE-CONFIGURED DIGITAL SAFETY COUNSELOR</b><br>' +
+                '<small style="color:#aeb9ca;font-size:9.5px">OpenAI account quota is exhausted (zero balance). Providing verified sample digital safety advice.</small>' +
+              '</div>' +
+              formatAIMarkdown(replyText),
+              'ai'
+            );
+          } else {
+            conversationHistory.push({ role: 'assistant', content: replyText });
+            addChatMessage(formatAIMarkdown(replyText), 'ai');
+          }
+        } else {
+          const errData = await response.json().catch(() => ({}));
+          if(response.status === 503 && errData.error === 'OPENAI_NOT_CONFIGURED'){
+            const unconfiguredNotice = 
+              '<b>⚠️ Live OpenAI Connection Unavailable</b><br><br>' +
+              'The backend server is running, but <code>OPENAI_API_KEY</code> has not been set in the <code>.env</code> file yet.<br><br>' +
+              '<b>To enable live OpenAI responses:</b><br>' +
+              'Set <code>OPENAI_API_KEY</code> in the project <code>.env</code> file, then restart the existing backend server.<br><br>' +
+              '<i>(Demo responses will not be misrepresented as OpenAI outputs).</i>';
+            addChatMessage(unconfiguredNotice, 'ai');
+          } else if(response.status === 429) {
+            const quotaNotice = 
+              '<div style="margin-bottom:8px;padding:6px 10px;background:#ffd16612;border:1px solid #ffd16635;border-radius:8px">' +
+                '<b style="color:#ffd166;font-size:11px">● DEMO MODE ACTIVATED (HTTP 429 Quota Exhausted)</b><br>' +
+                '<small style="color:#aeb9ca;font-size:9.5px">OpenAI reported zero balance or rate limit reached. Providing sample safety guidance.</small>' +
+              '</div>';
+            addChatMessage(quotaNotice, 'ai');
+            if(aiStatusBadge){
+              aiStatusBadge.textContent = '● DEMO MODE (ZERO CREDITS)';
+              aiStatusBadge.style.color = '#ffd166';
+              aiStatusBadge.style.borderColor = '#ffd16635';
+            }
+          } else {
+            const errNotice = '<b>⚠️ Chat Service Error (' + response.status + ')</b><br>' + 
+              escapeHtml(errData.message || 'An error occurred while contacting the chat service.') + 
+              (errData.details ? '<br><small style="color:#8f9bad">' + escapeHtml(errData.details) + '</small>' : '');
+            addChatMessage(errNotice, 'ai');
+          }
+        }
+      } catch (err) {
+        if(typingRow.parentNode) typingRow.remove();
+        const serverOfflineNotice = 
+          '<b>⚠️ Backend Server Unreachable</b><br><br>' +
+          'Open this app at <b>http://localhost:3000</b> to use the Sentinel AI assistant.<br><br>' +
+          'Make sure the Node.js server is running with <code>npm start</code>.<br><br>' +
+          '<small style="color:#8f9bad">Direct file:// browser access cannot securely query the OpenAI API without the local backend proxy.</small>';
+        addChatMessage(serverOfflineNotice, 'ai');
+      } finally {
+        followInput.disabled = false;
+        if(followSendBtn) followSendBtn.disabled = false;
+        followInput.focus();
+      }
+    }
+
+    function evaluateSafety(rawInput){
+      const input = (rawInput || '').trim();
+      if(!input) return null;
+
+      const lower = input.toLowerCase();
+
+      // De-obfuscation normalization for common character substitutions
+      const normalized = lower
+        .replace(/@/g, 'a')
+        .replace(/0/g, 'o')
+        .replace(/1/g, 'i')
+        .replace(/!/g, 'i')
+        .replace(/\$/g, 's')
+        .replace(/5/g, 's')
+        .replace(/3/g, 'e')
+        .replace(/\+/g, 't');
+
+      const alphaChars = input.replace(/[^a-zA-Z]/g, '');
+      const upperChars = input.replace(/[^A-Z]/g, '');
+      const capsRatio = alphaChars.length > 8 ? (upperChars.length / alphaChars.length) : 0;
+      const exclamationCount = (input.match(/!/g) || []).length;
+      const wordCount = input.split(/\s+/).filter(Boolean).length;
+
+      const detectedSignals = [];
+      const weights = {
+        threat: 0,
+        grooming: 0,
+        bullying: 0,
+        scam: 0,
+        crisis: 0,
+        safe: 0
+      };
+
+      function scan(patterns, category, weightMultiplier){
+        const mult = weightMultiplier || 1;
+        patterns.forEach(item => {
+          let matched = null;
+          let matchSource = null;
+          if(item.regex.test(input)){
+            matched = input.match(item.regex);
+            matchSource = matched ? matched[0] : null;
+          } else if(item.regex.test(normalized)){
+            matched = normalized.match(item.regex);
+            matchSource = matched ? matched[0] : null;
+          }
+
+          if(matched){
+            const impact = Math.round(item.weight * mult);
+            weights[category] += impact;
+            const snippet = matchSource ? `"${matchSource.slice(0, 32)}"` : '';
+            const label = item.name + (snippet ? `: ${snippet}` : '');
+            if(!detectedSignals.some(s => s.text === label)){
+              detectedSignals.push({ text: label, category: category, severity: item.severity || 'med' });
+            }
+          }
+        });
+      }
+
+      // 1. Direct Threats & Physical Safety Signatures
+      scan([
+        { regex: /\b(i will|i'll|im gonna|i am going to)\s+(hurt|kill|beat|destroy|hunt|track|attack|shoot|stab|choke)\b/i, name: 'Direct violence threat', weight: 46, severity: 'high' },
+        { regex: /\b(i know where you live|leak your (address|ip|location|phone|number)|doxx(ing)? you|find your house)\b/i, name: 'Doxxing / physical location threat', weight: 42, severity: 'high' },
+        { regex: /\b(watch your back|you('re| are) dead|you won't wake up|you will pay for this)\b/i, name: 'Intimidation threat', weight: 40, severity: 'high' },
+        { regex: /\b(threat|hurt you|find you|i will get you|beat you up)\b/i, name: 'Hostile threat marker', weight: 34, severity: 'high' }
+      ], 'threat');
+
+      // 2. Grooming, Coercion & Boundary Manipulation Signatures
+      scan([
+        { regex: /\b(send|take|snap|share|give)\s+(me\s+)?(a\s+)?(private|nude|naked|secret|bedroom|sexy)?\s*(photo|pic|picture|video|snap|selfie)s?\b/i, name: 'Private media solicitation', weight: 45, severity: 'high' },
+        { regex: /\b(private photo|send me a photo|nude|bathing suit|without clothes|turn (on )?camera|webcam)\b/i, name: 'Inappropriate media request', weight: 42, severity: 'high' },
+        { regex: /\b(don't|dont|do not)\s+tell\s+(your\s+)?(parents|mom|dad|family|anyone|friends|teacher)\b/i, name: 'Secrecy command / isolation', weight: 42, severity: 'high' },
+        { regex: /\b(keep this (our\s+)?secret|between (you and me|us)|promise not to tell|delete (our\s+)?(chat|messages|convo)|hide this)\b/i, name: 'Covert communication pressure', weight: 38, severity: 'high' },
+        { regex: /\b(age is just a number|mature for your age|too young to understand|meet me secretly|sneak out)\b/i, name: 'Age-boundary manipulation', weight: 40, severity: 'high' },
+        { regex: /\b(if you (really\s+)?(loved?|cared? about|liked?) me|you owe me|prove you care|after all i did)\b/i, name: 'Emotional guilt / boundary testing', weight: 28, severity: 'med' }
+      ], 'grooming');
+
+      // 3. Cyberbullying & Abusive Language Signatures
+      scan([
+        { regex: /\b(kill your\s?self|go die|kys|end your life|hang your\s?self)\b/i, name: 'Extreme harassment / self-harm incitement', weight: 52, severity: 'high' },
+        { regex: /\b(everyone\s+(is\s+)?(making fun of you|laughing at you|hates you)|nobody likes you|no one wants you|leave the group)\b/i, name: 'Targeted social humiliation', weight: 38, severity: 'high' },
+        { regex: /\b(you('re| are)\s+(so\s+)?(useless|stupid|pathetic|worthless|ugly|disgusting|a loser|an idiot|trash|a waste))\b/i, name: 'Targeted personal degradation', weight: 35, severity: 'high' },
+        { regex: /\b(shut up|hate you|idiot|loser|useless|freak|pathetic|clown)\b/i, name: 'Abusive language token', weight: 26, severity: 'med' }
+      ], 'bullying');
+
+      // 4. Scams, Phishing & Credential Theft Signatures
+      scan([
+        { regex: /\b(enter your (password|pin|otp|passcode|login)|share your (otp|password|code|credentials)|verify your account)\b/i, name: 'Credential / OTP solicitation', weight: 45, severity: 'high' },
+        { regex: /\b(password|otp|bank|claim|pin|passcode)\b/i, name: 'Sensitive credential marker', weight: 28, severity: 'med' },
+        { regex: /\b(claim (your\s+)?(free\s+)?(prize|money|reward|gift card|robux|v-bucks)|won a giveaway|free money|free prize)\b/i, name: 'Deceptive reward / bait lure', weight: 36, severity: 'med' },
+        { regex: /\b(click (this|the)\s+link|visit this site|http[s]?:\/\/|bit\.ly|tinyurl)\b/i, name: 'External routing / link indicator', weight: 30, severity: 'med' },
+        { regex: /\b(urgent(ly)?|within (\d+|24) hours|immediately or (your account will be|you will be banned))\b/i, name: 'Urgency & coercion indicator', weight: 28, severity: 'med' },
+        { regex: /\b(wire money|crypto|cashapp|venmo|giftcard)\b/i, name: 'Financial transfer request', weight: 34, severity: 'med' }
+      ], 'scam');
+
+      // 5. Crisis & Distress Signatures
+      scan([
+        { regex: /\b(want to (die|end it all)|hurt myself|cutting myself|suicidal|tired of living|can't keep going)\b/i, name: 'Self-harm or crisis distress indicator', weight: 50, severity: 'high' }
+      ], 'crisis');
+
+      // 6. Benign / Collaborative Context Signatures
+      scan([
+        { regex: /\b(study group|homework|assignment|project|exam|library|class|notes|presentation|syllabus)\b/i, name: 'Educational / study context', weight: 24, severity: 'safe' },
+        { regex: /\b(thank you|thanks|welcome|congrats|congratulations|happy birthday|good luck)\b/i, name: 'Courteous social expression', weight: 20, severity: 'safe' },
+        { regex: /\b(join our|want to join|help you with|let's practice|collaborate|good game|gg|nice work)\b/i, name: 'Constructive collaborative tone', weight: 20, severity: 'safe' },
+        { regex: /\b(hello|hey|hi\b|good morning|good evening|how are you)\b/i, name: 'Standard benign greeting', weight: 14, severity: 'safe' }
+      ], 'safe');
+
+      // Compound Amplifiers & Contextual Modifiers
+      let compoundBonus = 0;
+      const hasPrivateMedia = detectedSignals.some(s => s.text.includes('media') || s.text.includes('photo'));
+      const hasSecrecy = detectedSignals.some(s => s.text.includes('Secrecy') || s.text.includes('Covert'));
+      if(hasPrivateMedia && hasSecrecy){
+        compoundBonus += 22;
+        detectedSignals.push({ text: 'Compound risk: Coercive secrecy paired with private media request', category: 'grooming', severity: 'high' });
+      }
+
+      const hasCredential = detectedSignals.some(s => s.text.includes('Credential') || s.text.includes('OTP') || s.text.includes('password'));
+      const hasUrgencyOrLink = detectedSignals.some(s => s.text.includes('Urgency') || s.text.includes('link') || s.text.includes('lure'));
+      if(hasCredential && hasUrgencyOrLink){
+        compoundBonus += 20;
+        detectedSignals.push({ text: 'Compound risk: Credential solicitation combined with urgency/link lure', category: 'scam', severity: 'high' });
+      }
+
+      const hasHumiliation = detectedSignals.some(s => s.text.includes('humiliation') || s.text.includes('degradation'));
+      const hasAbuseToken = detectedSignals.some(s => s.text.includes('Abusive') || s.text.includes('harassment'));
+      if(hasHumiliation && hasAbuseToken){
+        compoundBonus += 16;
+        detectedSignals.push({ text: 'Compound risk: Target-specific humiliation with abusive language', category: 'bullying', severity: 'high' });
+      }
+
+      // Intensity modifiers: Caps Lock shouting & excessive exclamation
+      let intensityBonus = 0;
+      if(capsRatio >= 0.45){
+        intensityBonus += 6;
+        detectedSignals.push({ text: 'Linguistic signal: High proportion of uppercase text (shouting / aggressive emphasis)', category: 'intensity', severity: 'med' });
+      }
+      if(exclamationCount >= 3){
+        intensityBonus += 4;
+        detectedSignals.push({ text: 'Punctuation signal: Multiple exclamation marks indicating escalated pressure', category: 'intensity', severity: 'med' });
+      }
+
+      // Determine Primary Category
+      const threatScore = weights.threat;
+      const groomingScore = weights.grooming + (hasPrivateMedia && hasSecrecy ? 15 : 0);
+      const bullyingScore = weights.bullying + (hasHumiliation && hasAbuseToken ? 12 : 0);
+      const scamScore = weights.scam + (hasCredential && hasUrgencyOrLink ? 12 : 0);
+      const crisisScore = weights.crisis;
+      const safeScore = weights.safe;
+
+      const dangerMax = Math.max(threatScore, groomingScore, bullyingScore, scamScore, crisisScore);
+
+      let primaryCategory = 'ambiguous';
+      let riskScore = 44;
+      let confidence = 74;
+      let riskLabel = '🟡 NEEDS REVIEW';
+      let patternName = 'Ambiguous interaction';
+      let recommendedAction = '';
+
+      if(crisisScore >= 35){
+        primaryCategory = 'crisis';
+        riskScore = Math.min(97, Math.max(88, 70 + Math.round(crisisScore / 2) + compoundBonus));
+        riskLabel = '🟣 CRISIS ALERT';
+        patternName = 'Self-harm or crisis distress signal';
+        recommendedAction = 'If you or someone you know is in distress, reach out for compassionate support immediately. Call or text 988 (Suicide & Crisis Lifeline in US/Canada), text HOME to 741741, or contact your local health professionals. You do not have to carry this alone.';
+      } else if(threatScore >= 34 || (threatScore === dangerMax && threatScore > 0)){
+        primaryCategory = 'threat';
+        riskScore = Math.min(99, Math.max(85, 58 + threatScore + compoundBonus + intensityBonus));
+        riskLabel = riskScore >= 92 ? '🚨 CRITICAL' : '🔴 HIGH RISK';
+        patternName = 'Threatening interaction / physical safety concern';
+        recommendedAction = 'Do not engage with or escalate the threat. Preserve evidence immediately via unedited screenshots. If there is immediate danger to your physical safety, notify a trusted adult, school counselor, or emergency authorities promptly.';
+      } else if(groomingScore >= 35 || (hasPrivateMedia && hasSecrecy) || (groomingScore === dangerMax && groomingScore > 0)){
+        primaryCategory = 'grooming';
+        riskScore = Math.min(98, Math.max(82, 55 + groomingScore + compoundBonus + intensityBonus));
+        riskLabel = riskScore >= 90 ? '🔴 HIGH RISK' : '🟠 SUSPICIOUS';
+        patternName = 'Potential grooming / manipulative boundary violation';
+        recommendedAction = 'Cease communication immediately. Do not share any photos, personal details, or contact coordinates. Save screenshots for evidence, block the sender across all channels, and speak with a parent, trusted adult, or counselor right away.';
+      } else if(bullyingScore >= 30 || (bullyingScore === dangerMax && bullyingScore > 0)){
+        primaryCategory = 'bullying';
+        riskScore = Math.min(96, Math.max(76, 50 + bullyingScore + compoundBonus + intensityBonus));
+        riskLabel = riskScore >= 88 ? '🔴 HIGH RISK' : '🟠 SUSPICIOUS';
+        patternName = 'Cyberbullying / hostile or abusive language';
+        recommendedAction = 'Avoid feeding the harassment with defensive arguments. Save evidence via screenshots, mute or block the user, and report the behavior through platform moderation tools. Reach out to a friend, parent, or trusted person for support.';
+      } else if(scamScore >= 28 || (scamScore === dangerMax && scamScore > 0)){
+        primaryCategory = 'scam';
+        riskScore = Math.min(95, Math.max(72, 48 + scamScore + compoundBonus + intensityBonus));
+        riskLabel = riskScore >= 85 ? '🔴 HIGH RISK' : '🟠 SUSPICIOUS';
+        patternName = 'Scam / phishing & credential theft attempt';
+        recommendedAction = 'Never disclose passwords, PINs, or 2FA/OTP codes. Do not click on external claim links. If you suspect an account was compromised, change passwords immediately and report the interaction to the platform administrators.';
+      } else if(dangerMax === 0 && safeScore > 0){
+        primaryCategory = 'safe';
+        const safeDampener = Math.min(10, Math.round(safeScore / 8));
+        riskScore = Math.max(3, 12 - safeDampener);
+        riskLabel = '🟢 SAFE';
+        patternName = 'Normal / benign interaction';
+        recommendedAction = 'No immediate digital safety concern detected. Continue using good account security practices: keep personal credentials private, verify unknown senders, and maintain appropriate privacy settings.';
+      } else {
+        primaryCategory = 'ambiguous';
+        const dynamicVariance = (input.length % 9) - 4;
+        riskScore = Math.max(32, Math.min(52, 44 + dynamicVariance + intensityBonus));
+        riskLabel = '🟡 NEEDS REVIEW';
+        patternName = 'Ambiguous interaction / insufficient context';
+        recommendedAction = 'The interaction contains insufficient context for a definitive assessment. Proceed cautiously: avoid sharing sensitive personal details, observe if the contact attempts to escalate pressure, and review the broader conversation.';
+      }
+
+      // Calculate Dynamic Confidence
+      const signalCount = detectedSignals.length;
+      if(primaryCategory === 'safe'){
+        confidence = Math.min(98, 92 + Math.min(5, signalCount));
+      } else if(primaryCategory === 'ambiguous'){
+        confidence = Math.max(64, Math.min(78, 68 + Math.min(8, wordCount)));
+      } else {
+        const clarityBonus = dangerMax >= 40 ? 4 : 0;
+        confidence = Math.min(99, Math.max(86, 84 + signalCount * 3 + clarityBonus));
+      }
+
+      const safetyScore = Math.max(1, Math.min(99, 100 - riskScore));
+
+      let signalChips = [];
+      if(detectedSignals.length > 0){
+        signalChips = detectedSignals.map(s => {
+          if(s.severity === 'high'){
+            return '⚠ ' + s.text;
+          } else if(s.category === 'safe'){
+            return '✓ ' + s.text;
+          } else {
+            return '• ' + s.text;
+          }
+        });
+      } else {
+        if(primaryCategory === 'safe'){
+          signalChips = ['✓ Friendly conversational markers', '✓ No predatory or manipulative triggers', '✓ Standard digital exchange'];
+        } else {
+          signalChips = ['ℹ Limited context detected', 'ℹ No explicit threat triggers', 'ℹ Sender intent remains unconfirmed'];
+        }
+      }
+
+      const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      return {
+        r: riskLabel,
+        s: riskScore,
+        p: patternName,
+        c: confidence + '%',
+        a: recommendedAction,
+        signals: signalChips,
+        safe: safetyScore,
+        category: primaryCategory,
+        wordCount: wordCount,
+        charCount: input.length,
+        timestamp: timestamp,
+        inputText: input
+      };
+    }
+
+    function analyze(){
+      const raw = text.value.trim();
+      if(!raw){
+        text.focus();
+        return;
+      }
+
+      const data = evaluateSafety(raw);
+      if(!data) return;
+      currentAnalysis = data;
+
+      risk.textContent = data.r;
+      score.textContent = data.s + '% risk score';
+      pattern.textContent = data.p;
+      confidence.textContent = data.c;
+      action.textContent = data.a;
+
+      if(signals){
+        signals.innerHTML = data.signals.map(x => {
+          const isSafe = x.startsWith('✓');
+          const isHigh = x.startsWith('⚠');
+          const colorStyle = isSafe 
+            ? 'background:#59e6a70e;border-color:#59e6a725;color:#8df1c3;' 
+            : isHigh 
+            ? 'background:#ff657a0e;border-color:#ff657a25;color:#ffadb9;'
+            : 'background:#ffffff06;border-color:#ffffff12;color:#d0d7e2;';
+          return `<span class="signal" style="${colorStyle}">${x}</span>`;
+        }).join('');
+      }
+
+      if(safetyText) safetyText.textContent = data.safe + '/100';
+      if(safetyFill) safetyFill.style.width = data.safe + '%';
+
+      if(timeline){
+        timeline.innerHTML = 
+          `<div class="event"><span class="time">${data.timestamp}</span><b>Interaction ingested (${data.charCount} characters, ${data.wordCount} words)</b></div>` +
+          `<div class="event"><span class="time">${data.timestamp}</span><b>Local heuristic scan (${data.signals.length} safety signal${data.signals.length === 1 ? '' : 's'} evaluated)</b></div>` +
+          `<div class="event"><span class="time">${data.timestamp}</span><b>${data.p} (${data.s}% risk score, ${data.c} confidence)</b></div>`;
+      }
+
+      fill.style.width = data.s + '%';
+      fill.style.background = data.s >= 86 ? '#ff657a' : data.s >= 50 ? '#ffd166' : '#59e6a7';
+
+      result.classList.remove('show');
+      void result.offsetWidth;
+      result.classList.add('show');
+
+      // Update AI conversation with dynamic analysis details
+      chatwindow.innerHTML = '';
+      conversationHistory = [
+        { role: 'assistant', content: 'Analysis complete. This interaction is classified as ' + data.r + ' (' + data.p + ') with ' + data.s + '% risk score.' }
+      ];
+      addChatMessage('Analysis complete. This interaction is classified as <b>' + data.r + '</b> (' + data.p + ') with <b>' + data.s + '% risk score</b>. Ask me anything about this assessment, why it was flagged, or what steps to take next.', 'ai');
+
+      // Update dashboard metrics and record non-sensitive history
+      recordAnalysis(data);
+
+      // If safety report was already open, refresh it with the new analysis; otherwise keep clean state
+      if(reportbox && reportbox.classList.contains('show')){
+        generateReport(true);
+      } else if(reportBtn){
+        reportBtn.textContent = '▣ Generate Safety Report';
+      }
+    }
+
+    // Dashboard Statistics & History Management
+    const STATS_KEY = 'sentinel_stats_v1';
+    const HISTORY_KEY = 'sentinel_history_v1';
+
+    function getInitialStats(){
+      return {
+        totalAnalyzed: 0,
+        totalConfidenceSum: 0,
+        risksFound: 0,
+        resolvedCount: 0,
+        categories: {
+          bullying: 0,
+          threat: 0,
+          grooming: 0,
+          scam: 0,
+          safe: 0,
+          crisis: 0,
+          ambiguous: 0
+        }
+      };
+    }
+
+    function getStoredStats(){
+      try {
+        const raw = localStorage.getItem(STATS_KEY);
+        if(!raw) return getInitialStats();
+        const parsed = JSON.parse(raw);
+        if(!parsed || typeof parsed !== 'object') return getInitialStats();
+        return {
+          totalAnalyzed: Math.max(0, Number(parsed.totalAnalyzed) || 0),
+          totalConfidenceSum: Math.max(0, Number(parsed.totalConfidenceSum) || 0),
+          risksFound: Math.max(0, Number(parsed.risksFound) || 0),
+          resolvedCount: Math.max(0, Number(parsed.resolvedCount) || 0),
+          categories: {
+            bullying: Math.max(0, Number(parsed.categories?.bullying) || 0),
+            threat: Math.max(0, Number(parsed.categories?.threat) || 0),
+            grooming: Math.max(0, Number(parsed.categories?.grooming) || 0),
+            scam: Math.max(0, Number(parsed.categories?.scam) || 0),
+            safe: Math.max(0, Number(parsed.categories?.safe) || 0),
+            crisis: Math.max(0, Number(parsed.categories?.crisis) || 0),
+            ambiguous: Math.max(0, Number(parsed.categories?.ambiguous) || 0)
+          }
+        };
+      } catch (e) {
+        return getInitialStats();
+      }
+    }
+
+    function saveStats(stats){
+      try {
+        localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+      } catch (e) {}
+    }
+
+    function getStoredHistory(){
+      try {
+        const raw = localStorage.getItem(HISTORY_KEY);
+        if(!raw) return [];
+        const parsed = JSON.parse(raw);
+        if(!Array.isArray(parsed)) return [];
+        return parsed.filter(item => item && typeof item === 'object' && item.time && item.pattern);
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveHistory(history){
+      try {
+        // Enforce privacy: never store raw input text, only non-sensitive summary metadata
+        const safeItems = (history || []).slice(0, 8).map(h => ({
+          id: h.id || ('scan_' + Date.now()),
+          time: String(h.time || ''),
+          risk: String(h.risk || ''),
+          score: Number(h.score) || 0,
+          pattern: String(h.pattern || ''),
+          category: String(h.category || 'ambiguous'),
+          confidence: String(h.confidence || '')
+        }));
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(safeItems));
+      } catch (e) {}
+    }
+
+    function renderDashboard(){
+      const stats = getStoredStats();
+      const history = getStoredHistory();
+
+      if(statAnalyzed) statAnalyzed.textContent = stats.totalAnalyzed.toLocaleString();
+      if(statConfidence){
+        const avg = stats.totalAnalyzed > 0 
+          ? (stats.totalConfidenceSum / stats.totalAnalyzed).toFixed(1) + '%' 
+          : '0.0%';
+        statConfidence.textContent = avg;
+      }
+      if(statRisks) statRisks.textContent = stats.risksFound.toLocaleString();
+      if(statResolved){
+        if(stats.risksFound > 0){
+          const pct = Math.min(100, Math.round((stats.resolvedCount / stats.risksFound) * 100));
+          statResolved.textContent = pct + '%';
+        } else {
+          statResolved.textContent = '100%';
+        }
+      }
+
+      // Update threat category pill counters
+      const categoryCounters = {
+        'catCount-bullying': stats.categories.bullying || 0,
+        'catCount-threat': (stats.categories.threat || 0) + (stats.categories.crisis || 0),
+        'catCount-grooming': stats.categories.grooming || 0,
+        'catCount-scam': stats.categories.scam || 0,
+        'catCount-safe': (stats.categories.safe || 0) + (stats.categories.ambiguous || 0)
+      };
+
+      for(const id in categoryCounters){
+        const el = $(id);
+        if(el) el.textContent = categoryCounters[id];
+      }
+
+      // Render recent history list
+      if(historyList){
+        if(!history || history.length === 0){
+          historyList.innerHTML = '<div style="text-align:center;padding:12px;color:var(--muted);font-size:10px;border:1px dashed #ffffff0d;border-radius:9px">No interactions analyzed yet in this session.</div>';
+        } else {
+          historyList.innerHTML = history.map(item => {
+            const scoreNum = Number(item.score) || 0;
+            const color = scoreNum >= 86 ? '#ff657a' : scoreNum >= 50 ? '#ffd166' : '#59e6a7';
+            return `<div class="historyrow">` +
+              `<div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:8px">` +
+                `<span style="color:var(--muted);margin-right:7px;font-size:9px">${item.time}</span>` +
+                `<span style="color:#d8deea">${item.pattern}</span>` +
+              `</div>` +
+              `<span style="color:${color};white-space:nowrap">${scoreNum}%</span>` +
+            `</div>`;
+          }).join('');
+        }
+      }
+    }
+
+    function recordAnalysis(data){
+      const stats = getStoredStats();
+      const history = getStoredHistory();
+
+      stats.totalAnalyzed += 1;
+      const confNum = parseFloat(data.c) || 0;
+      stats.totalConfidenceSum += confNum;
+
+      if(data.s >= 50 || data.category !== 'safe'){
+        stats.risksFound += 1;
+      }
+
+      const cat = data.category || 'ambiguous';
+      if(stats.categories[cat] !== undefined){
+        stats.categories[cat] += 1;
+      } else {
+        stats.categories[cat] = 1;
+      }
+
+      // Store non-sensitive metadata only
+      history.unshift({
+        id: 'scan_' + Date.now(),
+        time: data.timestamp,
+        risk: data.r,
+        score: data.s,
+        pattern: data.p,
+        category: data.category,
+        confidence: data.c
+      });
+
+      saveStats(stats);
+      saveHistory(history);
+      renderDashboard();
+    }
+
+    function fallbackCopy(textToCopy, btn){
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = textToCopy;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        if(btn){
+          const prev = btn.textContent;
+          btn.textContent = '✓ Copied!';
+          setTimeout(() => { btn.textContent = prev; }, 2200);
+        }
+      } catch(e) {}
+    }
+
+    function generateReport(forceRefresh){
+      const isForce = forceRefresh === true;
+      // If user clicks the button while report is already showing, toggle it closed
+      if(!isForce && reportbox.classList.contains('show')){
+        reportbox.classList.remove('show');
+        if(reportBtn) reportBtn.textContent = '▣ Generate Safety Report';
+        return;
+      }
+
+      // If no analysis is active yet, check if there is text in the textarea to auto-analyze
+      if(!currentAnalysis){
+        const rawText = text?.value?.trim();
+        if(rawText){
+          analyze();
+        }
+      }
+
+      const d = getAnalysis();
+      if(!currentAnalysis && (!d.data || d.risk === 'NOT ANALYZED' || d.risk === '—')){
+        reportbox.innerHTML = 
+          '<div style="text-align:center;padding:18px 12px;color:var(--muted)">' +
+            '<div style="font-size:20px;margin-bottom:6px">📋</div>' +
+            '<b style="color:#fff;font-size:12px">No Active Analysis Available</b>' +
+            '<p style="font-size:10px;margin-top:5px;line-height:1.5">Please paste or select an interaction and click <b>Analyze Interaction with AI</b> first to generate an incident assessment report.</p>' +
+          '</div>';
+        reportbox.classList.add('show');
+        result.classList.add('show');
+        if(reportBtn) reportBtn.textContent = '▣ Hide Safety Report';
+        reportbox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        return;
+      }
+
+      const cur = d.data || currentAnalysis || {};
+      if(!cur.incidentId){
+        cur.incidentId = 'SAF-' + Date.now().toString(36).toUpperCase() + '-' + Math.floor(100 + Math.random() * 900);
+      }
+      if(!cur.fullTimestamp){
+        cur.fullTimestamp = new Date().toLocaleString();
+      }
+
+      const incidentId = cur.incidentId;
+      const timestamp = cur.fullTimestamp;
+      const scoreVal = cur.s !== undefined ? cur.s : (Number(d.score) || 0);
+      const riskLevel = cur.r || d.risk || 'UNKNOWN';
+      const patternName = cur.p || d.pattern || 'Interaction assessment';
+      const confidence = cur.c || d.confidence || '90%';
+      const safetyScore = (cur.safe !== undefined ? cur.safe : Math.max(1, 100 - scoreVal)) + '/100';
+      const actionText = cur.a || d.action || 'Exercise standard digital privacy precautions.';
+      const rawSignals = (cur.signals && cur.signals.length) ? cur.signals : ['Standard interaction pattern', 'No explicit threat signatures'];
+      const signalsList = rawSignals.map(s => String(s));
+
+      // Contextual explanation narrative
+      let explanation = '';
+      if(cur.category === 'threat'){
+        explanation = 'The interaction contains explicit threats of violence, intimidation, or physical harm. Such communication violates digital safety norms and poses immediate security concerns.';
+      } else if(cur.category === 'grooming'){
+        explanation = 'The interaction exhibits coercive secrecy, pressure to isolate from guardians, and/or solicitation of private media. In conjunction, these patterns strongly suggest manipulative boundary testing.';
+      } else if(cur.category === 'bullying'){
+        explanation = 'The interaction exhibits targeted social exclusion, personal humiliation, or hostile abusive language intended to intimidate or demean the recipient.';
+      } else if(cur.category === 'scam'){
+        explanation = 'The interaction utilizes urgent calls to action, suspicious prize lures, and/or solicitations for credentials (passwords, PINs, OTPs) indicative of phishing or financial fraud.';
+      } else if(cur.category === 'crisis'){
+        explanation = 'The interaction contains signals of extreme personal distress or self-harm ideation. Immediate supportive intervention and crisis outreach are strongly advised.';
+      } else if(cur.category === 'safe'){
+        explanation = 'The interaction reflects constructive, friendly, or educational dialogue without predatory, coercive, fraudulent, or hostile markers.';
+      } else {
+        explanation = 'The interaction contains limited contextual indicators. While no overt threat was confirmed, users should proceed with caution and verify sender intent.';
+      }
+
+      // Render Rich Report Card
+      reportbox.innerHTML = 
+        '<div class="report-head">' +
+          '<div>' +
+            '<div class="report-title">DIGITAL SAFETY INCIDENT REPORT</div>' +
+            '<div class="report-meta">Ref ID: <b style="color:#55d9ff">' + incidentId + '</b> • ' + timestamp + '</div>' +
+          '</div>' +
+          '<div class="report-actions">' +
+            '<button type="button" class="report-act-btn" id="copyReportBtn" title="Copy report text to clipboard">📋 Copy Report</button>' +
+            '<button type="button" class="report-act-btn" id="printReportBtn" title="Print or save as PDF">🖨 Print / PDF</button>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="report-grid">' +
+          '<div class="report-metric">' +
+            '<span>Risk Assessment</span>' +
+            '<b style="color:' + (scoreVal >= 86 ? '#ff657a' : scoreVal >= 50 ? '#ffd166' : '#59e6a7') + '">' + riskLevel + ' (' + scoreVal + '%)</b>' +
+          '</div>' +
+          '<div class="report-metric">' +
+            '<span>AI Confidence</span>' +
+            '<b style="color:#fff">' + confidence + '</b>' +
+          '</div>' +
+          '<div class="report-metric">' +
+            '<span>Safety Score</span>' +
+            '<b style="color:#59e6a7">' + safetyScore + '</b>' +
+          '</div>' +
+          '<div class="report-metric">' +
+            '<span>Primary Pattern</span>' +
+            '<b style="color:#dce5ef;font-size:11px">' + patternName + '</b>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="report-section">' +
+          '<h4>Identified Evidence Signals</h4>' +
+          '<div class="report-signals">' +
+            signalsList.map(s => '<span class="report-signal-chip">' + escapeHtml(s) + '</span>').join('') +
+          '</div>' +
+        '</div>' +
+
+        '<div class="report-section">' +
+          '<h4>Safety Analysis & Context</h4>' +
+          '<p style="color:#bdc8d7;font-size:10px;line-height:1.6">' + explanation + '</p>' +
+        '</div>' +
+
+        '<div class="report-section" style="border-bottom:none;margin-bottom:0;padding-bottom:0">' +
+          '<h4>Recommended Next Steps</h4>' +
+          '<p style="color:#dce5ef;font-size:10px;line-height:1.6;margin-bottom:8px">' + actionText + '</p>' +
+          '<div style="font-size:9px;color:#788698;border-top:1px dashed #ffffff10;padding-top:8px;margin-top:8px">' +
+            '🔒 <b>Confidentiality Notice:</b> Evaluated locally on-device. Sentinel AI heuristic models assist decision-making but do not replace human judgment or platform moderation.' +
+          '</div>' +
+        '</div>';
+
+      reportbox.setAttribute('data-incident-analysis', String(currentAnalysis?.timestamp || 'active'));
+      reportbox.classList.add('show');
+      if(reportBtn) reportBtn.textContent = '▣ Hide Safety Report';
+      reportbox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      // Wire Copy to Clipboard
+      const copyBtn = $('copyReportBtn');
+      if(copyBtn){
+        copyBtn.addEventListener('click', () => {
+          const plainTextReport = 
+`==================================================
+SENTINEL AI — SAFETY INCIDENT REPORT
+==================================================
+Incident Reference : ${incidentId}
+Timestamp          : ${timestamp}
+Risk Level         : ${riskLevel}
+Risk Score         : ${scoreVal}%
+AI Confidence      : ${confidence}
+Safety Score       : ${safetyScore}
+Classification     : ${patternName}
+
+--------------------------------------------------
+EVIDENCE SIGNALS IDENTIFIED:
+${signalsList.map(s => '  - ' + s.replace(/^[⚠✓•ℹ]\s*/, '')).join('\n')}
+
+--------------------------------------------------
+ASSESSMENT EXPLANATION:
+${explanation}
+
+--------------------------------------------------
+RECOMMENDED ACTIONS:
+${actionText}
+
+--------------------------------------------------
+NOTICE:
+Evaluated locally via Sentinel AI heuristic engine.
+==================================================`;
+
+          if(navigator.clipboard && navigator.clipboard.writeText){
+            navigator.clipboard.writeText(plainTextReport).then(() => {
+              copyBtn.textContent = '✓ Copied!';
+              setTimeout(() => { copyBtn.textContent = '📋 Copy Report'; }, 2200);
+            }).catch(() => {
+              fallbackCopy(plainTextReport, copyBtn);
+            });
+          } else {
+            fallbackCopy(plainTextReport, copyBtn);
+          }
+        });
+      }
+
+      // Wire Print / PDF
+      const printBtn = $('printReportBtn');
+      if(printBtn){
+        printBtn.addEventListener('click', () => {
+          window.print();
+        });
+      }
+    }
+
+    // Main analyzer button
+    const analyzeBtn=document.querySelector('.analyze');
+    if(analyzeBtn) analyzeBtn.addEventListener('click',analyze);
+
+    // Example buttons
+    document.querySelectorAll('.examples button').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        text.value=btn.getAttribute('data-example') || btn.textContent;
+        const onclick=btn.getAttribute('onclick');
+        if(onclick){
+          const match=onclick.match(/example\('([\s\S]*)'\)/);
+          if(match) text.value=match[1];
+        }
+        result.classList.remove('show');
+        if(reportbox) reportbox.classList.remove('show');
+        if(reportBtn) reportBtn.textContent = '▣ Generate Safety Report';
+        text.focus();
+      });
+    });
+
+    // Keep the existing inline example() calls working too.
+    window.example=function(v){
+      text.value=v;
+      result.classList.remove('show');
+      if(reportbox) reportbox.classList.remove('show');
+      if(reportBtn) reportBtn.textContent = '▣ Generate Safety Report';
+      text.focus();
+    };
+
+    if(reportBtn) reportBtn.addEventListener('click',generateReport);
+    followForm.addEventListener('submit',e=>{e.preventDefault();askQuestion();});
+
+    // Dashboard action button listeners
+    if(resetStatsBtn){
+      resetStatsBtn.addEventListener('click', () => {
+        try {
+          localStorage.removeItem(STATS_KEY);
+          localStorage.removeItem(HISTORY_KEY);
+        } catch(e) {}
+        renderDashboard();
+      });
+    }
+
+    if(clearHistoryBtn){
+      clearHistoryBtn.addEventListener('click', () => {
+        try {
+          localStorage.removeItem(HISTORY_KEY);
+        } catch(e) {}
+        renderDashboard();
+      });
+    }
+
+    if(resolveRiskBtn){
+      resolveRiskBtn.addEventListener('click', () => {
+        const stats = getStoredStats();
+        if(stats.risksFound > 0 && stats.resolvedCount < stats.risksFound){
+          stats.resolvedCount += 1;
+          saveStats(stats);
+          renderDashboard();
+        }
+      });
+    }
+
+    // Initial render of dashboard on load
+    renderDashboard();
+
+    // Check OpenAI backend connection status on load
+    checkAIStatus();
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',init,{once:true});
+  }else{
+    init();
+  }
+})();
+</script>
+</body>
+</html>
