@@ -36,13 +36,13 @@ if ($listener) {
   npm start
 }
 ```
-If the status request identifies Sentinel AI, open the existing server at **http://localhost:3000**. Do not start `npm start` again while it is running.
+If the status request identifies Sentinel AI, open the existing server at **http://localhost:3000/**. Do not start `npm start` again while it is running.
 
 On other operating systems, or after confirming the port is free:
 ```bash
 npm start
 ```
-The server will start on [http://localhost:3000](http://localhost:3000). Keep that terminal open while using the app.
+The server will start on [http://localhost:3000/](http://localhost:3000/). Keep that terminal open while using the app.
 
 ### 4. Open in Your Browser
 Open http://localhost:3000/ in Chrome, Edge, or Firefox.
